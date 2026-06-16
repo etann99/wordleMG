@@ -1,0 +1,1270 @@
+<!DOCTYPE html>
+<html lang="mg">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Teny Miafina</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   TENY MIAFINA — Glassmorphism Ultra-Modern
+   ============================================================ */
+:root {
+  --bg-1: #0a0a1a;
+  --bg-2: #0d0d2b;
+  --accent-1: #7c3aed;
+  --accent-2: #a855f7;
+  --accent-3: #06b6d4;
+  --correct: #10b981;
+  --correct-glow: rgba(16,185,129,0.4);
+  --present: #f59e0b;
+  --present-glow: rgba(245,158,11,0.4);
+  --absent: rgba(255,255,255,0.08);
+  --text: #f8fafc;
+  --text-muted: rgba(248,250,252,0.45);
+  --glass: rgba(255,255,255,0.05);
+  --glass-border: rgba(255,255,255,0.12);
+  --glass-hover: rgba(255,255,255,0.09);
+  --tile-size: 60px;
+  --tile-gap: 6px;
+  --font: 'Space Grotesk', sans-serif;
+  --font-mono: 'Space Mono', monospace;
+  --radius: 14px;
+  --flip-dur: 0.5s;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  height: 100%;
+  background: var(--bg-1);
+  color: var(--text);
+  font-family: var(--font);
+  -webkit-font-smoothing: antialiased;
+  user-select: none;
+  overflow: hidden;
+}
+
+/* Animated gradient background */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 80% 60% at 20% 10%, rgba(124,58,237,0.18) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 50% at 80% 80%, rgba(6,182,212,0.12) 0%, transparent 60%),
+    radial-gradient(ellipse 40% 40% at 50% 50%, rgba(168,85,247,0.08) 0%, transparent 70%);
+  z-index: 0;
+  pointer-events: none;
+}
+
+#app {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  max-width: 480px;
+  margin: 0 auto;
+}
+
+/* ============================================================
+   HEADER
+   ============================================================ */
+header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  height: 56px;
+  flex-shrink: 0;
+  border-bottom: 1px solid var(--glass-border);
+  backdrop-filter: blur(12px);
+  background: rgba(10,10,26,0.6);
+}
+
+.header-left, .header-right {
+  display: flex;
+  gap: 4px;
+  width: 80px;
+}
+.header-right { justify-content: flex-end; }
+
+header h1 {
+  font-family: var(--font-mono);
+  font-size: 1.15rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  text-align: center;
+  flex: 1;
+  background: linear-gradient(135deg, #a855f7, #06b6d4);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.icon-btn {
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  cursor: pointer;
+  color: var(--text-muted);
+  padding: 0;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  transition: all 0.2s;
+  font-size: 1rem;
+}
+.icon-btn:hover {
+  background: var(--glass-hover);
+  color: var(--text);
+  border-color: rgba(255,255,255,0.22);
+}
+
+/* ============================================================
+   TOAST
+   ============================================================ */
+#toast {
+  position: fixed;
+  top: 68px;
+  left: 50%;
+  transform: translateX(-50%) translateY(-6px);
+  background: rgba(248,250,252,0.95);
+  backdrop-filter: blur(20px);
+  color: #0a0a1a;
+  padding: 10px 22px;
+  border-radius: 100px;
+  font-weight: 700;
+  font-size: 0.82rem;
+  letter-spacing: 0.04em;
+  z-index: 300;
+  opacity: 0;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  pointer-events: none;
+  white-space: nowrap;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+}
+#toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* ============================================================
+   START SCREEN
+   ============================================================ */
+#start-screen {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 24px;
+}
+
+.logo-tiles {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+.logo-tile {
+  width: 56px; height: 56px;
+  border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-mono);
+  font-size: 1.6rem; font-weight: 700;
+  text-transform: uppercase;
+}
+.lt-correct {
+  background: var(--correct);
+  box-shadow: 0 0 20px var(--correct-glow);
+}
+.lt-present {
+  background: var(--present);
+  box-shadow: 0 0 20px var(--present-glow);
+}
+.lt-absent {
+  background: var(--glass);
+  border: 2px solid var(--glass-border);
+}
+.lt-accent {
+  background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+  box-shadow: 0 0 20px rgba(124,58,237,0.5);
+}
+
+#start-screen h1 {
+  font-family: var(--font-mono);
+  font-size: 1.6rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  text-align: center;
+  background: linear-gradient(135deg, #a855f7 0%, #06b6d4 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.tagline {
+  font-size: 0.88rem;
+  color: var(--text-muted);
+  text-align: center;
+  line-height: 1.5;
+  margin-bottom: 8px;
+  max-width: 260px;
+}
+
+.btn-start {
+  width: 220px;
+  padding: 15px;
+  border: none;
+  border-radius: var(--radius);
+  background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+  color: white;
+  font-family: var(--font);
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: transform 0.15s, box-shadow 0.15s;
+  box-shadow: 0 4px 24px rgba(124,58,237,0.4);
+}
+.btn-start:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 32px rgba(124,58,237,0.55);
+}
+.btn-start:active { transform: scale(0.97); }
+
+.btn-outline {
+  width: 220px;
+  padding: 13px;
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius);
+  background: var(--glass);
+  color: var(--text-muted);
+  font-family: var(--font);
+  font-size: 0.88rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.2s;
+  backdrop-filter: blur(8px);
+}
+.btn-outline:hover {
+  background: var(--glass-hover);
+  color: var(--text);
+  border-color: rgba(255,255,255,0.22);
+}
+
+/* ============================================================
+   GAME AREA
+   ============================================================ */
+#game-area {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+}
+
+/* ============================================================
+   BOARD
+   ============================================================ */
+#board-container {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px 0 8px;
+}
+
+#board {
+  display: grid;
+  grid-template-rows: repeat(6, var(--tile-size));
+  grid-template-columns: repeat(5, var(--tile-size));
+  gap: var(--tile-gap);
+}
+
+.board-row { display: contents; }
+
+/* Tuile */
+.tile {
+  width: var(--tile-size);
+  height: var(--tile-size);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-mono);
+  font-size: 1.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  position: relative;
+  perspective: 250px;
+  overflow: hidden;
+}
+
+.tile-inner {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  transform-style: preserve-3d;
+  transition: transform var(--flip-dur) ease;
+  border-radius: 10px;
+}
+.tile.flip .tile-inner { transform: rotateX(180deg); }
+
+.tile-front, .tile-back {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-mono);
+  font-size: 1.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  border-radius: 10px;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+.tile-front {
+  background: var(--glass);
+  border: 1.5px solid var(--glass-border);
+  color: var(--text);
+}
+.tile[data-state="tbd"] .tile-front {
+  border-color: rgba(255,255,255,0.3);
+  background: rgba(255,255,255,0.07);
+  animation: tilePop 0.09s ease;
+}
+
+.tile-back { transform: rotateX(180deg); }
+.tile-back[data-result="correct"] {
+  background: var(--correct);
+  border: 1.5px solid var(--correct);
+  box-shadow: 0 0 18px var(--correct-glow);
+  color: #fff;
+}
+.tile-back[data-result="present"] {
+  background: var(--present);
+  border: 1.5px solid var(--present);
+  box-shadow: 0 0 18px var(--present-glow);
+  color: #fff;
+}
+.tile-back[data-result="absent"] {
+  background: rgba(255,255,255,0.06);
+  border: 1.5px solid rgba(255,255,255,0.1);
+  color: var(--text-muted);
+}
+
+/* Animations */
+@keyframes tilePop {
+  0%   { transform: scale(1); }
+  50%  { transform: scale(1.1); }
+  100% { transform: scale(1); }
+}
+@keyframes rowShake {
+  0%, 100% { transform: translateX(0); }
+  15%, 55%, 85% { transform: translateX(-5px); }
+  35%, 70% { transform: translateX(5px); }
+}
+@keyframes tileBounce {
+  0%, 100% { transform: translateY(0); }
+  40%  { transform: translateY(-18px); }
+  60%  { transform: translateY(-8px); }
+}
+.row-shake { animation: rowShake 0.5s ease; }
+.tile-bounce { animation: tileBounce 0.6s ease forwards; }
+
+/* ============================================================
+   KEYBOARD
+   ============================================================ */
+#keyboard {
+  padding: 6px 8px 20px;
+  flex-shrink: 0;
+}
+
+.kb-row {
+  display: flex;
+  justify-content: center;
+  gap: 5px;
+  margin-bottom: 6px;
+}
+
+.key {
+  height: 52px;
+  min-width: 36px;
+  padding: 0 5px;
+  border: 1px solid var(--glass-border);
+  border-radius: 8px;
+  background: var(--glass);
+  backdrop-filter: blur(8px);
+  color: var(--text);
+  font-family: var(--font);
+  font-size: 0.82rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s, transform 0.1s, border-color 0.15s;
+  -webkit-tap-highlight-color: transparent;
+  letter-spacing: 0.03em;
+}
+.key:hover { background: var(--glass-hover); border-color: rgba(255,255,255,0.2); }
+.key:active { transform: scale(0.93); }
+.key.wide { min-width: 58px; font-size: 0.72rem; }
+
+.key[data-state="correct"] {
+  background: var(--correct);
+  border-color: var(--correct);
+  box-shadow: 0 0 12px var(--correct-glow);
+  color: #fff;
+}
+.key[data-state="present"] {
+  background: var(--present);
+  border-color: var(--present);
+  box-shadow: 0 0 12px var(--present-glow);
+  color: #fff;
+}
+.key[data-state="absent"] {
+  background: rgba(255,255,255,0.03);
+  border-color: rgba(255,255,255,0.06);
+  color: rgba(255,255,255,0.3);
+}
+
+/* ============================================================
+   MODALS — Glassmorphism
+   ============================================================ */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease;
+  padding: 20px;
+}
+.modal-overlay.open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.modal {
+  background: rgba(13,13,43,0.85);
+  backdrop-filter: blur(30px);
+  border: 1px solid var(--glass-border);
+  border-radius: 20px;
+  padding: 28px 26px 22px;
+  max-width: 400px;
+  width: 100%;
+  position: relative;
+  transform: translateY(14px) scale(0.97);
+  transition: transform 0.28s ease;
+  box-shadow: 0 24px 64px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.08);
+}
+.modal-overlay.open .modal { transform: translateY(0) scale(1); }
+
+.modal-title {
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  text-align: center;
+  margin-bottom: 20px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--glass-border);
+  background: linear-gradient(135deg, #a855f7, #06b6d4);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.modal-close {
+  position: absolute;
+  top: 14px; right: 14px;
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  color: var(--text-muted);
+  font-size: 1rem;
+  cursor: pointer;
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.2s;
+}
+.modal-close:hover { background: var(--glass-hover); color: var(--text); }
+
+/* How to play */
+.how-steps { list-style: none; margin-bottom: 18px; }
+.how-steps li {
+  font-size: 0.875rem;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+  padding-left: 18px;
+  position: relative;
+  line-height: 1.5;
+}
+.how-steps li::before {
+  content: "▸";
+  position: absolute; left: 0;
+  color: var(--accent-2);
+  font-size: 0.7rem;
+  top: 3px;
+}
+
+.how-examples { display: flex; flex-direction: column; gap: 10px; margin-bottom: 18px; }
+.how-example { display: flex; align-items: center; gap: 12px; }
+.how-tile {
+  width: 38px; height: 38px;
+  border-radius: 7px;
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-mono);
+  font-size: 1.1rem; font-weight: 700; text-transform: uppercase;
+  flex-shrink: 0;
+}
+.how-tile.correct { background: var(--correct); box-shadow: 0 0 10px var(--correct-glow); }
+.how-tile.present { background: var(--present); box-shadow: 0 0 10px var(--present-glow); }
+.how-tile.absent  { background: var(--glass); border: 1.5px solid var(--glass-border); }
+.how-example p { font-size: 0.82rem; color: var(--text-muted); line-height: 1.4; }
+.how-example p strong { color: var(--text); }
+
+.how-note {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  margin-bottom: 14px;
+  padding: 10px 14px;
+  background: rgba(168,85,247,0.08);
+  border: 1px solid rgba(168,85,247,0.2);
+  border-radius: 8px;
+  line-height: 1.5;
+}
+
+/* Buttons in modal */
+.btn-primary {
+  width: 100%;
+  margin-top: 8px;
+  padding: 13px;
+  border: none;
+  border-radius: 10px;
+  background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+  color: white;
+  font-family: var(--font);
+  font-size: 0.88rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: transform 0.15s, box-shadow 0.15s;
+  box-shadow: 0 4px 20px rgba(124,58,237,0.35);
+}
+.btn-primary:hover { transform: translateY(-1px); box-shadow: 0 6px 28px rgba(124,58,237,0.5); }
+.btn-primary:active { transform: scale(0.97); }
+
+.btn-secondary {
+  width: 100%;
+  margin-top: 6px;
+  padding: 12px;
+  border: 1px solid var(--glass-border);
+  border-radius: 10px;
+  background: var(--glass);
+  color: var(--text-muted);
+  font-family: var(--font);
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.btn-secondary:hover { background: var(--glass-hover); color: var(--text); }
+
+/* Stats modal */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  margin-bottom: 20px;
+}
+.stat-item { text-align: center; }
+.stat-item .n {
+  font-family: var(--font-mono);
+  font-size: 1.9rem;
+  font-weight: 700;
+  line-height: 1;
+  margin-bottom: 5px;
+  background: linear-gradient(135deg, #a855f7, #06b6d4);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.stat-item .l {
+  font-size: 0.62rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  line-height: 1.3;
+}
+
+.distrib-title {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 10px;
+}
+.distrib-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 5px;
+  font-size: 0.82rem;
+}
+.distrib-row .num {
+  min-width: 14px;
+  font-family: var(--font-mono);
+  font-weight: 700;
+  color: var(--text-muted);
+}
+.distrib-bar-wrap { flex: 1; }
+.distrib-bar {
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.08);
+  min-width: 24px;
+  height: 20px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-right: 7px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  transition: width 0.4s ease;
+  font-family: var(--font-mono);
+}
+.distrib-bar.current {
+  background: linear-gradient(90deg, var(--accent-1), var(--correct));
+  border-color: transparent;
+  box-shadow: 0 0 10px var(--correct-glow);
+}
+
+/* Result modal */
+.result-title {
+  font-family: var(--font-mono);
+  font-size: 1.5rem;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 6px;
+  letter-spacing: 0.08em;
+}
+.result-subtitle {
+  text-align: center;
+  color: var(--text-muted);
+  margin-bottom: 14px;
+  font-size: 0.875rem;
+}
+.result-word {
+  text-align: center;
+  font-family: var(--font-mono);
+  font-size: 1.9rem;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  margin: 6px 0 18px;
+}
+.result-word.correct {
+  color: var(--correct);
+  text-shadow: 0 0 20px var(--correct-glow);
+}
+.result-word.lose { color: var(--text-muted); }
+.result-grid {
+  text-align: center;
+  font-size: 1.3rem;
+  letter-spacing: 3px;
+  line-height: 1.7;
+  margin-bottom: 18px;
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-height: 680px) {
+  :root { --tile-size: 50px; }
+  #keyboard .key { height: 44px; }
+  header h1 { font-size: 1rem; }
+  #start-screen { gap: 10px; }
+}
+@media (max-width: 360px) {
+  :root { --tile-size: 52px; --tile-gap: 5px; }
+  .key { min-width: 32px; font-size: 0.75rem; }
+  .key.wide { min-width: 52px; }
+}
+</style>
+</head>
+<body>
+
+<div id="app">
+
+  <!-- ══════════════════════════════════════════════════════════
+       ÉCRAN DE DÉMARRAGE
+  ══════════════════════════════════════════════════════════ -->
+  <div id="start-screen">
+    <div class="logo-tiles">
+      <div class="logo-tile lt-correct">T</div>
+      <div class="logo-tile lt-present">E</div>
+      <div class="logo-tile lt-absent">N</div>
+      <div class="logo-tile lt-accent">Y</div>
+    </div>
+    <h1>Teny Miafina</h1>
+    <p class="tagline">Hahita ny teny afenina amin'ny fitsapana 6</p>
+    <button class="btn-start" id="btn-start">Hilalao</button>
+    <button class="btn-outline" id="btn-how-start">Fomba filalao</button>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════
+       ZONE DE JEU
+  ══════════════════════════════════════════════════════════ -->
+  <div id="game-area" style="display:none; flex-direction:column; height:100%;">
+
+    <header>
+      <div class="header-left">
+        <button class="icon-btn" id="btn-home" title="Accueil">←</button>
+        <button class="icon-btn" id="btn-how" title="Fomba filalao">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+               stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/>
+            <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/>
+            <circle cx="12" cy="17" r="0.5" fill="currentColor"/>
+          </svg>
+        </button>
+      </div>
+
+      <h1>Teny Miafina</h1>
+
+      <div class="header-right">
+        <button class="icon-btn" id="btn-stats" title="Statistiques">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+               stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="20" x2="18" y2="10"/>
+            <line x1="12" y1="20" x2="12" y2="4"/>
+            <line x1="6"  y1="20" x2="6"  y2="14"/>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <div id="toast"></div>
+    <div id="board-container"><div id="board"></div></div>
+    <div id="keyboard"></div>
+
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     MODAL — Fomba filalao
+══════════════════════════════════════════════════════════ -->
+<div class="modal-overlay" id="how-overlay">
+  <div class="modal">
+    <button class="modal-close" id="btn-close-how">✕</button>
+    <h2 class="modal-title">Fomba filalao</h2>
+    <ul class="how-steps">
+      <li>Teny 5 litera no afenina.</li>
+      <li>Manana fitsapana 6 ianao mba hahitana azy.</li>
+      <li>Azo ampidiraina ny teny malagasy rehetra — litera 5 manan-danja.</li>
+      <li>Aorian'ny fitsapana tsirairay, ovàn'ny loko ny litera:</li>
+    </ul>
+    <div class="how-examples">
+      <div class="how-example">
+        <div class="how-tile correct">S</div>
+        <p><strong>S</strong> — Litera mety, toerana mety</p>
+      </div>
+      <div class="how-example">
+        <div class="how-tile present">A</div>
+        <p><strong>A</strong> — Litera mety, toerana diso</p>
+      </div>
+      <div class="how-example">
+        <div class="how-tile absent">T</div>
+        <p><strong>T</strong> — Litera tsy ao amin'ny teny</p>
+      </div>
+    </div>
+    <p class="how-note">⚡ Azo ampidiraina ny fampitambaran-tsoratra 5 manan-danja — tsy ilaina ny hisian'ny teny ao amin'ny rakibolana. Tsy azo ampidiraina ny litera: U, X, Q, W, C — ary Y amin'ny laharana 1–4.</p>
+    <button class="btn-primary" id="btn-close-how-2">Azo izany, hilalao!</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     MODAL — Statistiques
+══════════════════════════════════════════════════════════ -->
+<div class="modal-overlay" id="stats-overlay">
+  <div class="modal">
+    <button class="modal-close" id="btn-close-stats">✕</button>
+    <h2 class="modal-title">Ny statistikao</h2>
+    <div class="stats-grid">
+      <div class="stat-item stat-played"><div class="n">0</div><div class="l">Lalao</div></div>
+      <div class="stat-item stat-winrate"><div class="n">0</div><div class="l">% Fandresena</div></div>
+      <div class="stat-item stat-streak"><div class="n">0</div><div class="l">Fandresena mifantohy</div></div>
+      <div class="stat-item stat-best"><div class="n">0</div><div class="l">Tsara indrindra</div></div>
+    </div>
+    <div class="distrib-title">Fizarana ny fitsapana</div>
+    <div class="distrib-bars"></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     MODAL — Vokatra
+══════════════════════════════════════════════════════════ -->
+<div class="modal-overlay" id="result-overlay">
+  <div class="modal">
+    <button class="modal-close" id="btn-close-result">✕</button>
+    <h2 class="result-title"></h2>
+    <p class="result-subtitle"></p>
+    <div class="result-word"></div>
+    <div class="result-grid"></div>
+    <button class="btn-primary" id="btn-play-again">Hilalao indray</button>
+    <button class="btn-secondary" id="btn-share">Zarao ny vokatra</button>
+  </div>
+</div>
+
+<script>
+// ============================================================
+//  WORDS — liste des mots secrets
+// ============================================================
+const WORDS = [
+  "adidy","ainga","alina","amany","andro","antsy","aotra","arivo",
+  "atody","avoka","bonga","enina","erana","goavy","hetra","maika",
+  "mamoy","matoa","miafa","miako","moana","orona","ranjo","ratra",
+  "saina","sokay","tenda","tsiny","tsiro","vaika","vanga","voaka",
+  "arina","fitao","tsilo","foana","fomba","gadra","kitay","lamba",
+  "mahay","maina","miady","milay","miova","miray","noana","olana",
+  "omaly","omana","orana","riaka","trano","tsara","vatsy","venty",
+  "ngeza","kisoa","ratsy","tokoa","fetsy","mitia","fitia","fiady",
+  "matoy","birao","boky","ditra","fafy","faly","fana","fandy",
+  "fitia","foko","hena","hery","hita","hosy","iety","ilan",
+  "imana","inona","iray","isika","izay","izaho","jiro","kanto",
+  "loha","lola","mahia","mamy","manga","manko","masina","mena",
+  "menaka","mialy","miara","mifaly","milaza","mino","miray","mitohy",
+  "mofo","mpaka","naiky","naman","nanto","ondry","onony","pakan",
+  "raha","rehatra","reny","roa","ronono","rotra","sakaiza","salama",
+  "sangy","sarona","savika","soa","soava","toaka","toerana","tompo",
+  "tonga","toro","traika","trosa","vady","vahoaka","vaky","valia",
+  "vato","vavaka","velona","vody","voky","volana","vola","zaza",
+];
+
+// ============================================================
+//  VALIDATION — alphabet malgache
+//  Interdit: U, X, Q, W, C
+//  Y autorisé UNIQUEMENT en position 5 (index 4)
+// ============================================================
+const FORBIDDEN_ANYWHERE = new Set(['u','x','q','w','c']);
+
+function isValidMalagasyInput(word) {
+  const w = word.toLowerCase();
+  if (w.length !== 5) return false;
+  for (let i = 0; i < 5; i++) {
+    const ch = w[i];
+    if (FORBIDDEN_ANYWHERE.has(ch)) return false;
+    if (ch === 'y' && i !== 4) return false;
+  }
+  return true;
+}
+
+// ============================================================
+//  GAME LOGIC
+// ============================================================
+const WORD_LENGTH = 5;
+const MAX_TRIES   = 6;
+
+let state = {
+  secret: "", guesses: [],
+  currentRow: 0, input: "",
+  gameOver: false, won: false,
+};
+
+let stats = loadStats();
+
+const $board       = document.getElementById("board");
+const $keyboard    = document.getElementById("keyboard");
+const $toast       = document.getElementById("toast");
+const $startScreen = document.getElementById("start-screen");
+const $gameArea    = document.getElementById("game-area");
+const $howOverlay  = document.getElementById("how-overlay");
+const $statsOverlay= document.getElementById("stats-overlay");
+const $resultOverlay = document.getElementById("result-overlay");
+
+// ---------- Init ----------
+function initGame() {
+  state.secret = randomWord();
+  state.guesses = [];
+  state.currentRow = 0;
+  state.input = "";
+  state.gameOver = false;
+  state.won = false;
+  buildBoard();
+  buildKeyboard();
+}
+
+function startGame() {
+  $startScreen.style.display = "none";
+  $gameArea.style.display = "flex";
+  initGame();
+}
+
+// ---------- Board ----------
+function buildBoard() {
+  $board.innerHTML = "";
+  for (let r = 0; r < MAX_TRIES; r++) {
+    const row = document.createElement("div");
+    row.className = "board-row";
+    row.id = `row-${r}`;
+    for (let c = 0; c < WORD_LENGTH; c++) {
+      const tile = document.createElement("div");
+      tile.className = "tile";
+      tile.id = `tile-${r}-${c}`;
+      tile.innerHTML = `<div class="tile-inner">
+        <div class="tile-front"></div>
+        <div class="tile-back"></div>
+      </div>`;
+      row.appendChild(tile);
+    }
+    $board.appendChild(row);
+  }
+}
+
+function setTileLetter(row, col, letter) {
+  const tile  = document.getElementById(`tile-${row}-${col}`);
+  const front = tile.querySelector(".tile-front");
+  front.textContent = letter ? letter.toUpperCase() : "";
+  tile.dataset.state = letter ? "tbd" : "";
+}
+
+function revealRow(rowIndex, result) {
+  for (let c = 0; c < WORD_LENGTH; c++) {
+    const tile  = document.getElementById(`tile-${rowIndex}-${c}`);
+    const back  = tile.querySelector(".tile-back");
+    const front = tile.querySelector(".tile-front");
+    back.textContent    = result[c].letter.toUpperCase();
+    back.dataset.result = result[c].state;
+    front.textContent   = result[c].letter.toUpperCase();
+    setTimeout(() => {
+      tile.classList.add("flip");
+      setTimeout(() => updateKey(result[c].letter, result[c].state), 250);
+    }, c * 300);
+  }
+}
+
+function bounceRow(rowIndex) {
+  for (let c = 0; c < WORD_LENGTH; c++) {
+    const tile = document.getElementById(`tile-${rowIndex}-${c}`);
+    setTimeout(() => {
+      tile.classList.add("tile-bounce");
+      tile.addEventListener("animationend", () => tile.classList.remove("tile-bounce"), { once: true });
+    }, c * 80);
+  }
+}
+
+function shakeRow(rowIndex) {
+  // shake each tile individually
+  for (let c = 0; c < WORD_LENGTH; c++) {
+    const tile = document.getElementById(`tile-${rowIndex}-${c}`);
+    tile.classList.add("row-shake");
+    tile.addEventListener("animationend", () => tile.classList.remove("row-shake"), { once: true });
+  }
+}
+
+// ---------- Keyboard ----------
+const KB_ROWS = [
+  ["a","z","e","r","t","y","i","o","p"],
+  ["s","d","f","g","h","j","k","l","m"],
+  ["OK","b","v","n","⌫"],
+];
+
+function buildKeyboard() {
+  $keyboard.innerHTML = "";
+  KB_ROWS.forEach(row => {
+    const rowEl = document.createElement("div");
+    rowEl.className = "kb-row";
+    row.forEach(k => {
+      const btn = document.createElement("button");
+      btn.className = "key";
+      const isWide = k === "OK" || k === "⌫";
+      if (isWide) btn.classList.add("wide");
+      btn.textContent = k;
+      btn.dataset.key = k;
+      btn.addEventListener("click", () => handleKey(k));
+      rowEl.appendChild(btn);
+    });
+    $keyboard.appendChild(rowEl);
+  });
+}
+
+function updateKey(letter, newState) {
+  const btn = $keyboard.querySelector(`[data-key="${letter}"]`);
+  if (!btn) return;
+  const priority = { correct: 3, present: 2, absent: 1 };
+  const current  = priority[btn.dataset.state] || 0;
+  const incoming = priority[newState] || 0;
+  if (incoming > current) btn.dataset.state = newState;
+}
+
+// ---------- Input ----------
+function handleKey(key) {
+  if (state.gameOver) return;
+  if (key === "⌫" || key === "Backspace") return deleteLetter();
+  if (key === "OK" || key === "Enter")    return submitGuess();
+  if (/^[a-zA-Z]$/.test(key))            return addLetter(key.toLowerCase());
+}
+
+function addLetter(letter) {
+  if (state.input.length >= WORD_LENGTH) return;
+  // Real-time validation: block forbidden letters
+  if (FORBIDDEN_ANYWHERE.has(letter)) {
+    showToast("Litera tsy misy amin'ny abidy malagasy");
+    return;
+  }
+  // Y only at position 4 (5th)
+  if (letter === 'y' && state.input.length !== 4) {
+    showToast("Y amin'ny toerana farany ihany");
+    return;
+  }
+  state.input += letter;
+  setTileLetter(state.currentRow, state.input.length - 1, letter);
+}
+
+function deleteLetter() {
+  if (state.input.length === 0) return;
+  state.input = state.input.slice(0, -1);
+  setTileLetter(state.currentRow, state.input.length, "");
+}
+
+function submitGuess() {
+  if (state.input.length < WORD_LENGTH) {
+    showToast("Litera 5 no ilaina");
+    shakeRow(state.currentRow);
+    return;
+  }
+  // Final validation
+  if (!isValidMalagasyInput(state.input)) {
+    showToast("Fampitambaran-tsoratra tsy mety");
+    shakeRow(state.currentRow);
+    return;
+  }
+
+  const result = evaluateGuess(state.input, state.secret);
+  state.guesses.push({ word: state.input, result });
+  const rowIndex = state.currentRow;
+  const guessWord = state.input;
+  revealRow(rowIndex, result);
+
+  const totalFlipTime = (WORD_LENGTH - 1) * 300 + 550;
+
+  state.currentRow++;
+  state.input = "";
+
+  setTimeout(() => {
+    if (guessWord === state.secret) {
+      state.won = true;
+      state.gameOver = true;
+      bounceRow(rowIndex);
+      updateStats(true, rowIndex + 1);
+      setTimeout(() => openResult(true, rowIndex + 1), 1400);
+    } else if (rowIndex === MAX_TRIES - 1) {
+      state.gameOver = true;
+      updateStats(false, null);
+      setTimeout(() => openResult(false, null), 800);
+    }
+  }, totalFlipTime);
+}
+
+// ---------- Evaluation ----------
+function evaluateGuess(guess, secret) {
+  const result    = guess.split("").map(l => ({ letter: l, state: "absent" }));
+  const secretArr = secret.split("");
+  const guessArr  = guess.split("");
+
+  guessArr.forEach((l, i) => {
+    if (l === secretArr[i]) {
+      result[i].state = "correct";
+      secretArr[i] = null;
+      guessArr[i]  = null;
+    }
+  });
+  guessArr.forEach((l, i) => {
+    if (!l) return;
+    const idx = secretArr.indexOf(l);
+    if (idx !== -1) {
+      result[i].state = "present";
+      secretArr[idx]  = null;
+    }
+  });
+  return result;
+}
+
+// ---------- Modals ----------
+function openHow() {
+  $howOverlay.classList.add("open");
+}
+
+function openStats() {
+  const played     = stats.played;
+  const winRate    = played ? Math.round((stats.wins / played) * 100) : 0;
+  const m = $statsOverlay;
+  m.querySelector(".stat-played .n").textContent  = played;
+  m.querySelector(".stat-winrate .n").textContent = winRate;
+  m.querySelector(".stat-streak .n").textContent  = stats.streak;
+  m.querySelector(".stat-best .n").textContent    = stats.bestStreak;
+
+  const distrib = m.querySelector(".distrib-bars");
+  distrib.innerHTML = "";
+  const maxVal = Math.max(...Object.values(stats.distribution), 1);
+  for (let i = 1; i <= MAX_TRIES; i++) {
+    const count = stats.distribution[i] || 0;
+    const pct   = Math.round((count / maxVal) * 100);
+    const isCurrent = state.won && state.guesses.length === i;
+    distrib.innerHTML += `
+      <div class="distrib-row">
+        <span class="num">${i}</span>
+        <div class="distrib-bar-wrap">
+          <div class="distrib-bar ${isCurrent ? "current" : ""}" style="width:max(24px,${pct}%)">${count}</div>
+        </div>
+      </div>`;
+  }
+  $statsOverlay.classList.add("open");
+}
+
+function openResult(won, tries) {
+  const m = $resultOverlay;
+  if (won) {
+    m.querySelector(".result-title").textContent   = "Nety! 🎉";
+    m.querySelector(".result-subtitle").textContent = `Hita tao anatin'ny fitsapana ${tries}!`;
+    m.querySelector(".result-word").textContent    = state.secret.toUpperCase();
+    m.querySelector(".result-word").className      = "result-word correct";
+  } else {
+    m.querySelector(".result-title").textContent   = "Tsy nety 😔";
+    m.querySelector(".result-subtitle").textContent = `Ny teny afenina dia: ${state.secret.toUpperCase()}`;
+    m.querySelector(".result-word").textContent    = state.secret.toUpperCase();
+    m.querySelector(".result-word").className      = "result-word lose";
+  }
+  const emojiGrid = state.guesses.map(g =>
+    g.result.map(r =>
+      r.state === "correct" ? "🟩" : r.state === "present" ? "🟨" : "⬛"
+    ).join("")
+  ).join("\n");
+  m.querySelector(".result-grid").textContent = emojiGrid;
+  $resultOverlay.classList.add("open");
+}
+
+function closeModal(el) { el.classList.remove("open"); }
+
+// ---------- Stats ----------
+function loadStats() {
+  try {
+    const raw = localStorage.getItem("tenymiafina_stats");
+    if (raw) return JSON.parse(raw);
+  } catch (_) {}
+  return { played:0, wins:0, streak:0, bestStreak:0,
+           distribution:{1:0,2:0,3:0,4:0,5:0,6:0} };
+}
+function saveStats() {
+  try { localStorage.setItem("tenymiafina_stats", JSON.stringify(stats)); } catch(_) {}
+}
+function updateStats(won, tries) {
+  stats.played++;
+  if (won) {
+    stats.wins++;
+    stats.streak++;
+    if (stats.streak > stats.bestStreak) stats.bestStreak = stats.streak;
+    stats.distribution[tries] = (stats.distribution[tries] || 0) + 1;
+  } else {
+    stats.streak = 0;
+  }
+  saveStats();
+}
+
+// ---------- Toast ----------
+let toastTimer = null;
+function showToast(msg, duration = 1800) {
+  $toast.textContent = msg;
+  $toast.classList.add("show");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => $toast.classList.remove("show"), duration);
+}
+
+// ---------- Share ----------
+function shareResult() {
+  const tries = state.won ? state.guesses.length : "X";
+  const emojiGrid = state.guesses.map(g =>
+    g.result.map(r =>
+      r.state === "correct" ? "🟩" : r.state === "present" ? "🟨" : "⬛"
+    ).join("")
+  ).join("\n");
+  const text = `Teny Miafina — Fitsapana ${tries}/${MAX_TRIES}\n\n${emojiGrid}`;
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(text).then(() => showToast("Voakopy! ✓"));
+  } else {
+    showToast("Tsy azo nakopy");
+  }
+}
+
+function randomWord() {
+  return WORDS[Math.floor(Math.random() * WORDS.length)];
+}
+
+// ============================================================
+//  EVENT LISTENERS
+// ============================================================
+document.addEventListener("keydown", e => {
+  if ($startScreen.style.display !== "none") return;
+  if ($howOverlay.classList.contains("open"))    return;
+  if ($statsOverlay.classList.contains("open"))  return;
+  if ($resultOverlay.classList.contains("open")) return;
+  handleKey(e.key);
+});
+
+document.getElementById("btn-start").addEventListener("click", startGame);
+document.getElementById("btn-how-start").addEventListener("click", openHow);
+document.getElementById("btn-how").addEventListener("click", openHow);
+document.getElementById("btn-stats").addEventListener("click", () => {
+  if (state.currentRow > 0 || state.gameOver) openStats();
+  else showToast("Hilalao aloha!");
+});
+
+document.getElementById("btn-close-how").addEventListener("click", () => closeModal($howOverlay));
+document.getElementById("btn-close-how-2").addEventListener("click", () => closeModal($howOverlay));
+document.getElementById("btn-close-stats").addEventListener("click", () => closeModal($statsOverlay));
+document.getElementById("btn-close-result").addEventListener("click", () => closeModal($resultOverlay));
+
+[$howOverlay, $statsOverlay, $resultOverlay].forEach(o => {
+  o.addEventListener("click", e => { if (e.target === o) closeModal(o); });
+});
+
+document.getElementById("btn-play-again").addEventListener("click", () => {
+  closeModal($resultOverlay);
+  initGame();
+});
+document.getElementById("btn-share").addEventListener("click", shareResult);
+
+document.addEventListener("click", e => {
+  if (e.target && e.target.id === "btn-home") {
+    if (confirm("Hiala ny lalao?")) location.reload();
+  }
+});
+</script>
+</body>
+</html>
