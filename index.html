@@ -3,12 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Teny Miafina</title>
+<title>KaroTeny</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
 /* ============================================================
-   TENY MIAFINA — Glassmorphism Ultra-Modern
+   KAROTENY — Glassmorphism Ultra-Modern
    ============================================================ */
 :root {
   --bg-1: #0a0a1a;
@@ -268,10 +268,13 @@ header h1 {
    ============================================================ */
 #game-area {
   flex: 1;
-  display: flex;
+  display: none; /* géré par JS via classList */
   flex-direction: column;
   height: 100%;
   overflow: hidden;
+}
+#game-area.active {
+  display: flex;
 }
 
 /* ============================================================
@@ -425,6 +428,12 @@ header h1 {
 .key:active { transform: scale(0.93); }
 .key.wide { min-width: 58px; font-size: 0.72rem; }
 
+/* Touche Y visuellement différenciée : autorisée en position 5 seulement */
+.key[data-key="y"] {
+  border-color: rgba(168,85,247,0.5);
+  color: rgba(168,85,247,0.9);
+}
+
 .key[data-state="correct"] {
   background: var(--correct);
   border-color: var(--correct);
@@ -545,17 +554,6 @@ header h1 {
 .how-example p { font-size: 0.82rem; color: var(--text-muted); line-height: 1.4; }
 .how-example p strong { color: var(--text); }
 
-.how-note {
-  font-size: 0.78rem;
-  color: var(--text-muted);
-  margin-bottom: 14px;
-  padding: 10px 14px;
-  background: rgba(168,85,247,0.08);
-  border: 1px solid rgba(168,85,247,0.2);
-  border-radius: 8px;
-  line-height: 1.5;
-}
-
 /* Buttons in modal */
 .btn-primary {
   width: 100%;
@@ -576,24 +574,6 @@ header h1 {
 }
 .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 6px 28px rgba(124,58,237,0.5); }
 .btn-primary:active { transform: scale(0.97); }
-
-.btn-secondary {
-  width: 100%;
-  margin-top: 6px;
-  padding: 12px;
-  border: 1px solid var(--glass-border);
-  border-radius: 10px;
-  background: var(--glass);
-  color: var(--text-muted);
-  font-family: var(--font);
-  font-size: 0.85rem;
-  font-weight: 600;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-.btn-secondary:hover { background: var(--glass-hover); color: var(--text); }
 
 /* Stats modal */
 .stats-grid {
@@ -720,6 +700,8 @@ header h1 {
 </head>
 <body>
 
+<div id="toast"></div>
+
 <div id="app">
 
   <!-- ══════════════════════════════════════════════════════════
@@ -727,26 +709,26 @@ header h1 {
   ══════════════════════════════════════════════════════════ -->
   <div id="start-screen">
     <div class="logo-tiles">
-      <div class="logo-tile lt-correct">T</div>
-      <div class="logo-tile lt-present">E</div>
-      <div class="logo-tile lt-absent">N</div>
-      <div class="logo-tile lt-accent">Y</div>
+      <div class="logo-tile lt-correct">K</div>
+      <div class="logo-tile lt-present">A</div>
+      <div class="logo-tile lt-absent">R</div>
+      <div class="logo-tile lt-accent">O</div>
     </div>
-    <h1>Teny Miafina</h1>
-    <p class="tagline">Hahita ny teny afenina amin'ny fitsapana 6</p>
+    <h1>KaroTeny</h1>
+    <p class="tagline">Tadiavo ilay teny miafina anaty andrana 6</p>
     <button class="btn-start" id="btn-start">Hilalao</button>
-    <button class="btn-outline" id="btn-how-start">Fomba filalao</button>
+    <button class="btn-outline" id="btn-how-start">Mianatra milalao</button>
   </div>
 
   <!-- ══════════════════════════════════════════════════════════
        ZONE DE JEU
   ══════════════════════════════════════════════════════════ -->
-  <div id="game-area" style="display:none; flex-direction:column; height:100%;">
+  <div id="game-area">
 
     <header>
       <div class="header-left">
-        <button class="icon-btn" id="btn-home" title="Accueil">←</button>
-        <button class="icon-btn" id="btn-how" title="Fomba filalao">
+        <button class="icon-btn" id="btn-home" title="Fandraisana">←</button>
+        <button class="icon-btn" id="btn-how" title="Mianatra milalao">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
                stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
             <circle cx="12" cy="12" r="10"/>
@@ -756,10 +738,10 @@ header h1 {
         </button>
       </div>
 
-      <h1>Teny Miafina</h1>
+      <h1>KaroTeny</h1>
 
       <div class="header-right">
-        <button class="icon-btn" id="btn-stats" title="Statistiques">
+        <button class="icon-btn" id="btn-stats" title="Antontan'isa">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
                stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
             <line x1="18" y1="20" x2="18" y2="10"/>
@@ -770,7 +752,6 @@ header h1 {
       </div>
     </header>
 
-    <div id="toast"></div>
     <div id="board-container"><div id="board"></div></div>
     <div id="keyboard"></div>
 
@@ -778,34 +759,32 @@ header h1 {
 </div>
 
 <!-- ══════════════════════════════════════════════════════════
-     MODAL — Fomba filalao
+     MODAL — Mianatra milalao
 ══════════════════════════════════════════════════════════ -->
 <div class="modal-overlay" id="how-overlay">
   <div class="modal">
     <button class="modal-close" id="btn-close-how">✕</button>
-    <h2 class="modal-title">Fomba filalao</h2>
+    <h2 class="modal-title">Mianatra milalao</h2>
     <ul class="how-steps">
-      <li>Teny 5 litera no afenina.</li>
-      <li>Manana fitsapana 6 ianao mba hahitana azy.</li>
-      <li>Azo ampidiraina ny teny malagasy rehetra — litera 5 manan-danja.</li>
-      <li>Aorian'ny fitsapana tsirairay, ovàn'ny loko ny litera:</li>
+      <li>Teny iray manana litera 5 no miafina.</li>
+      <li>Omena andrana 6 ianao ahafahanao mahita azy.</li>
+      <li>Toy izao ny fitsarana ny andrana ataonao, amin'ny alalan'ny loko raisin'ny litera:</li>
     </ul>
     <div class="how-examples">
       <div class="how-example">
         <div class="how-tile correct">S</div>
-        <p><strong>S</strong> — Litera mety, toerana mety</p>
+        <p><strong>S</strong> — Litera marina, toerana marina</p>
       </div>
       <div class="how-example">
         <div class="how-tile present">A</div>
-        <p><strong>A</strong> — Litera mety, toerana diso</p>
+        <p><strong>A</strong> — Litera marina, toerana diso</p>
       </div>
       <div class="how-example">
         <div class="how-tile absent">T</div>
-        <p><strong>T</strong> — Litera tsy ao amin'ny teny</p>
+        <p><strong>T</strong> — Litera tsy ao amin'ilay teny</p>
       </div>
     </div>
-    <p class="how-note">⚡ Azo ampidiraina ny fampitambaran-tsoratra 5 manan-danja — tsy ilaina ny hisian'ny teny ao amin'ny rakibolana. Tsy azo ampidiraina ny litera: U, X, Q, W, C — ary Y amin'ny laharana 1–4.</p>
-    <button class="btn-primary" id="btn-close-how-2">Azo izany, hilalao!</button>
+    <button class="btn-primary" id="btn-close-how-2">Azo izany e ! Hilalao !</button>
   </div>
 </div>
 
@@ -815,14 +794,14 @@ header h1 {
 <div class="modal-overlay" id="stats-overlay">
   <div class="modal">
     <button class="modal-close" id="btn-close-stats">✕</button>
-    <h2 class="modal-title">Ny statistikao</h2>
+    <h2 class="modal-title">Antontanisanao</h2>
     <div class="stats-grid">
-      <div class="stat-item stat-played"><div class="n">0</div><div class="l">Lalao</div></div>
-      <div class="stat-item stat-winrate"><div class="n">0</div><div class="l">% Fandresena</div></div>
-      <div class="stat-item stat-streak"><div class="n">0</div><div class="l">Fandresena mifantohy</div></div>
-      <div class="stat-item stat-best"><div class="n">0</div><div class="l">Tsara indrindra</div></div>
+      <div class="stat-item stat-played"><div class="n">0</div><div class="l">Lalao natao</div></div>
+      <div class="stat-item stat-winrate"><div class="n">0</div><div class="l">%n'ny fandresena</div></div>
+      <div class="stat-item stat-streak"><div class="n">0</div><div class="l">Fandresena mifampitohy</div></div>
+      <div class="stat-item stat-best"><div class="n">0</div><div class="l">Tarika tsara indrindra</div></div>
     </div>
-    <div class="distrib-title">Fizarana ny fitsapana</div>
+    <div class="distrib-title">Fitsinjaran'ny andrana</div>
     <div class="distrib-bars"></div>
   </div>
 </div>
@@ -838,39 +817,30 @@ header h1 {
     <div class="result-word"></div>
     <div class="result-grid"></div>
     <button class="btn-primary" id="btn-play-again">Hilalao indray</button>
-    <button class="btn-secondary" id="btn-share">Zarao ny vokatra</button>
   </div>
 </div>
 
 <script>
 // ============================================================
-//  WORDS — liste des mots secrets
+//  WORDS
 // ============================================================
 const WORDS = [
   "adidy","ainga","alina","amany","andro","antsy","aotra","arivo",
-  "atody","avoka","bonga","enina","erana","goavy","hetra","maika",
+  "atody","bonga","enina","erana","goavy","hetra","maika",
   "mamoy","matoa","miafa","miako","moana","orona","ranjo","ratra",
   "saina","sokay","tenda","tsiny","tsiro","vaika","vanga","voaka",
-  "arina","fitao","tsilo","foana","fomba","gadra","kitay","lamba",
+  "arina","tsilo","foana","fomba","gadra","kitay","lamba",
   "mahay","maina","miady","milay","miova","miray","noana","olana",
   "omaly","omana","orana","riaka","trano","tsara","vatsy","venty",
   "ngeza","kisoa","ratsy","tokoa","fetsy","mitia","fitia","fiady",
-  "matoy","birao","boky","ditra","fafy","faly","fana","fandy",
-  "fitia","foko","hena","hery","hita","hosy","iety","ilan",
-  "imana","inona","iray","isika","izay","izaho","jiro","kanto",
-  "loha","lola","mahia","mamy","manga","manko","masina","mena",
-  "menaka","mialy","miara","mifaly","milaza","mino","miray","mitohy",
-  "mofo","mpaka","naiky","naman","nanto","ondry","onony","pakan",
-  "raha","rehatra","reny","roa","ronono","rotra","sakaiza","salama",
-  "sangy","sarona","savika","soa","soava","toaka","toerana","tompo",
-  "tonga","toro","traika","trosa","vady","vahoaka","vaky","valia",
-  "vato","vavaka","velona","vody","voky","volana","vola","zaza",
+  "matoy","birao","ditra","isika","kanto",
+  "mahia","manga","manko","mpaka","ondry","onony",
+  "rotra","toaka","tonga","trosa","mialy","miara","soava","tompo",
+  "saika",
 ];
 
 // ============================================================
-//  VALIDATION — alphabet malgache
-//  Interdit: U, X, Q, W, C
-//  Y autorisé UNIQUEMENT en position 5 (index 4)
+//  VALIDATION
 // ============================================================
 const FORBIDDEN_ANYWHERE = new Set(['u','x','q','w','c']);
 
@@ -895,34 +865,36 @@ let state = {
   secret: "", guesses: [],
   currentRow: 0, input: "",
   gameOver: false, won: false,
+  isAnimating: false,
 };
 
 let stats = loadStats();
 
-const $board       = document.getElementById("board");
-const $keyboard    = document.getElementById("keyboard");
-const $toast       = document.getElementById("toast");
-const $startScreen = document.getElementById("start-screen");
-const $gameArea    = document.getElementById("game-area");
-const $howOverlay  = document.getElementById("how-overlay");
-const $statsOverlay= document.getElementById("stats-overlay");
+const $board         = document.getElementById("board");
+const $keyboard      = document.getElementById("keyboard");
+const $toast         = document.getElementById("toast");
+const $startScreen   = document.getElementById("start-screen");
+const $gameArea      = document.getElementById("game-area");
+const $howOverlay    = document.getElementById("how-overlay");
+const $statsOverlay  = document.getElementById("stats-overlay");
 const $resultOverlay = document.getElementById("result-overlay");
 
 // ---------- Init ----------
 function initGame() {
-  state.secret = randomWord();
-  state.guesses = [];
-  state.currentRow = 0;
-  state.input = "";
-  state.gameOver = false;
-  state.won = false;
+  state.secret      = randomWord();
+  state.guesses     = [];
+  state.currentRow  = 0;
+  state.input       = "";
+  state.gameOver    = false;
+  state.won         = false;
+  state.isAnimating = false;
   buildBoard();
   buildKeyboard();
 }
 
 function startGame() {
   $startScreen.style.display = "none";
-  $gameArea.style.display = "flex";
+  $gameArea.classList.add("active");
   initGame();
 }
 
@@ -950,7 +922,7 @@ function buildBoard() {
 function setTileLetter(row, col, letter) {
   const tile  = document.getElementById(`tile-${row}-${col}`);
   const front = tile.querySelector(".tile-front");
-  front.textContent = letter ? letter.toUpperCase() : "";
+  front.textContent  = letter ? letter.toUpperCase() : "";
   tile.dataset.state = letter ? "tbd" : "";
 }
 
@@ -980,7 +952,6 @@ function bounceRow(rowIndex) {
 }
 
 function shakeRow(rowIndex) {
-  // shake each tile individually
   for (let c = 0; c < WORD_LENGTH; c++) {
     const tile = document.getElementById(`tile-${rowIndex}-${c}`);
     tile.classList.add("row-shake");
@@ -1005,8 +976,8 @@ function buildKeyboard() {
       btn.className = "key";
       const isWide = k === "OK" || k === "⌫";
       if (isWide) btn.classList.add("wide");
-      btn.textContent = k;
-      btn.dataset.key = k;
+      btn.textContent  = k;
+      btn.dataset.key  = k;
       btn.addEventListener("click", () => handleKey(k));
       rowEl.appendChild(btn);
     });
@@ -1025,7 +996,7 @@ function updateKey(letter, newState) {
 
 // ---------- Input ----------
 function handleKey(key) {
-  if (state.gameOver) return;
+  if (state.gameOver || state.isAnimating) return;
   if (key === "⌫" || key === "Backspace") return deleteLetter();
   if (key === "OK" || key === "Enter")    return submitGuess();
   if (/^[a-zA-Z]$/.test(key))            return addLetter(key.toLowerCase());
@@ -1033,14 +1004,12 @@ function handleKey(key) {
 
 function addLetter(letter) {
   if (state.input.length >= WORD_LENGTH) return;
-  // Real-time validation: block forbidden letters
   if (FORBIDDEN_ANYWHERE.has(letter)) {
-    showToast("Litera tsy misy amin'ny abidy malagasy");
+    showToast("Tsy misy amin'ny abidy malagasy io litera io");
     return;
   }
-  // Y only at position 4 (5th)
   if (letter === 'y' && state.input.length !== 4) {
-    showToast("Y amin'ny toerana farany ihany");
+    showToast("Amin'ny faran'ny teny ihany no mampiasa Y isika");
     return;
   }
   state.input += letter;
@@ -1059,16 +1028,17 @@ function submitGuess() {
     shakeRow(state.currentRow);
     return;
   }
-  // Final validation
   if (!isValidMalagasyInput(state.input)) {
-    showToast("Fampitambaran-tsoratra tsy mety");
+    showToast("Tamba-tsoratra tsy mety");
     shakeRow(state.currentRow);
     return;
   }
 
-  const result = evaluateGuess(state.input, state.secret);
+  state.isAnimating = true;
+
+  const result    = evaluateGuess(state.input, state.secret);
   state.guesses.push({ word: state.input, result });
-  const rowIndex = state.currentRow;
+  const rowIndex  = state.currentRow;
   const guessWord = state.input;
   revealRow(rowIndex, result);
 
@@ -1078,8 +1048,9 @@ function submitGuess() {
   state.input = "";
 
   setTimeout(() => {
+    state.isAnimating = false;
     if (guessWord === state.secret) {
-      state.won = true;
+      state.won      = true;
       state.gameOver = true;
       bounceRow(rowIndex);
       updateStats(true, rowIndex + 1);
@@ -1101,16 +1072,16 @@ function evaluateGuess(guess, secret) {
   guessArr.forEach((l, i) => {
     if (l === secretArr[i]) {
       result[i].state = "correct";
-      secretArr[i] = null;
-      guessArr[i]  = null;
+      secretArr[i]    = null;
+      guessArr[i]     = null;
     }
   });
   guessArr.forEach((l, i) => {
     if (!l) return;
     const idx = secretArr.indexOf(l);
     if (idx !== -1) {
-      result[i].state = "present";
-      secretArr[idx]  = null;
+      result[i].state  = "present";
+      secretArr[idx]   = null;
     }
   });
   return result;
@@ -1122,8 +1093,8 @@ function openHow() {
 }
 
 function openStats() {
-  const played     = stats.played;
-  const winRate    = played ? Math.round((stats.wins / played) * 100) : 0;
+  const played  = stats.played;
+  const winRate = played ? Math.round((stats.wins / played) * 100) : 0;
   const m = $statsOverlay;
   m.querySelector(".stat-played .n").textContent  = played;
   m.querySelector(".stat-winrate .n").textContent = winRate;
@@ -1134,8 +1105,8 @@ function openStats() {
   distrib.innerHTML = "";
   const maxVal = Math.max(...Object.values(stats.distribution), 1);
   for (let i = 1; i <= MAX_TRIES; i++) {
-    const count = stats.distribution[i] || 0;
-    const pct   = Math.round((count / maxVal) * 100);
+    const count     = stats.distribution[i] || 0;
+    const pct       = Math.round((count / maxVal) * 100);
     const isCurrent = state.won && state.guesses.length === i;
     distrib.innerHTML += `
       <div class="distrib-row">
@@ -1151,15 +1122,15 @@ function openStats() {
 function openResult(won, tries) {
   const m = $resultOverlay;
   if (won) {
-    m.querySelector(".result-title").textContent   = "Nety! 🎉";
-    m.querySelector(".result-subtitle").textContent = `Hita tao anatin'ny fitsapana ${tries}!`;
-    m.querySelector(".result-word").textContent    = state.secret.toUpperCase();
-    m.querySelector(".result-word").className      = "result-word correct";
+    m.querySelector(".result-title").textContent    = "Nahomby !";
+    m.querySelector(".result-subtitle").textContent = `Hita tao anaty andrana ${tries}!`;
+    m.querySelector(".result-word").textContent     = state.secret.toUpperCase();
+    m.querySelector(".result-word").className       = "result-word correct";
   } else {
-    m.querySelector(".result-title").textContent   = "Tsy nety 😔";
-    m.querySelector(".result-subtitle").textContent = `Ny teny afenina dia: ${state.secret.toUpperCase()}`;
-    m.querySelector(".result-word").textContent    = state.secret.toUpperCase();
-    m.querySelector(".result-word").className      = "result-word lose";
+    m.querySelector(".result-title").textContent    = "Tsy nahomby";
+    m.querySelector(".result-subtitle").textContent = `Ny teny miafina dia: ${state.secret.toUpperCase()}`;
+    m.querySelector(".result-word").textContent     = state.secret.toUpperCase();
+    m.querySelector(".result-word").className       = "result-word lose";
   }
   const emojiGrid = state.guesses.map(g =>
     g.result.map(r =>
@@ -1178,8 +1149,8 @@ function loadStats() {
     const raw = localStorage.getItem("tenymiafina_stats");
     if (raw) return JSON.parse(raw);
   } catch (_) {}
-  return { played:0, wins:0, streak:0, bestStreak:0,
-           distribution:{1:0,2:0,3:0,4:0,5:0,6:0} };
+  return { played: 0, wins: 0, streak: 0, bestStreak: 0,
+           distribution: { 1:0, 2:0, 3:0, 4:0, 5:0, 6:0 } };
 }
 function saveStats() {
   try { localStorage.setItem("tenymiafina_stats", JSON.stringify(stats)); } catch(_) {}
@@ -1206,43 +1177,39 @@ function showToast(msg, duration = 1800) {
   toastTimer = setTimeout(() => $toast.classList.remove("show"), duration);
 }
 
-// ---------- Share ----------
-function shareResult() {
-  const tries = state.won ? state.guesses.length : "X";
-  const emojiGrid = state.guesses.map(g =>
-    g.result.map(r =>
-      r.state === "correct" ? "🟩" : r.state === "present" ? "🟨" : "⬛"
-    ).join("")
-  ).join("\n");
-  const text = `Teny Miafina — Fitsapana ${tries}/${MAX_TRIES}\n\n${emojiGrid}`;
-  if (navigator.clipboard) {
-    navigator.clipboard.writeText(text).then(() => showToast("Voakopy! ✓"));
-  } else {
-    showToast("Tsy azo nakopy");
-  }
-}
-
+// ---------- Random Word ----------
 function randomWord() {
-  return WORDS[Math.floor(Math.random() * WORDS.length)];
+  const valid = WORDS.filter(w => isValidMalagasyInput(w));
+  return valid[Math.floor(Math.random() * valid.length)];
 }
 
 // ============================================================
 //  EVENT LISTENERS
 // ============================================================
 document.addEventListener("keydown", e => {
-  if ($startScreen.style.display !== "none") return;
+  if (!$gameArea.classList.contains("active")) return;
   if ($howOverlay.classList.contains("open"))    return;
   if ($statsOverlay.classList.contains("open"))  return;
   if ($resultOverlay.classList.contains("open")) return;
   handleKey(e.key);
 });
 
-document.getElementById("btn-start").addEventListener("click", startGame);
+document.getElementById("btn-start").addEventListener("click", (e) => {
+  e.currentTarget.blur();
+  startGame();
+});
+
+document.getElementById("btn-play-again").addEventListener("click", (e) => {
+  e.currentTarget.blur();
+  closeModal($resultOverlay);
+  initGame();
+});
+
 document.getElementById("btn-how-start").addEventListener("click", openHow);
 document.getElementById("btn-how").addEventListener("click", openHow);
 document.getElementById("btn-stats").addEventListener("click", () => {
   if (state.currentRow > 0 || state.gameOver) openStats();
-  else showToast("Hilalao aloha!");
+  else showToast("Hilalao aloha");
 });
 
 document.getElementById("btn-close-how").addEventListener("click", () => closeModal($howOverlay));
@@ -1254,15 +1221,9 @@ document.getElementById("btn-close-result").addEventListener("click", () => clos
   o.addEventListener("click", e => { if (e.target === o) closeModal(o); });
 });
 
-document.getElementById("btn-play-again").addEventListener("click", () => {
-  closeModal($resultOverlay);
-  initGame();
-});
-document.getElementById("btn-share").addEventListener("click", shareResult);
-
 document.addEventListener("click", e => {
   if (e.target && e.target.id === "btn-home") {
-    if (confirm("Hiala ny lalao?")) location.reload();
+    if (confirm("Hiala ?")) location.reload();
   }
 });
 </script>
